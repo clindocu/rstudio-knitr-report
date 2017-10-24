@@ -1,0 +1,297 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% DEMOGRAPHICS - BEGIN
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+\newpage
+\section{Statistical Methods}
+Statistical analyses of this non-interventional study were descriptive and exploratory in nature.
+For continuous variables, summary statistics, e.g., the mean, standard deviation (SD), median, 
+lower (Q1) and upper quartiles (Q3) and minimum and maximum values were calculated. 
+For dichotomous and categorical variables, the number and percentage of participants in each
+category were reported. 95\% confidence intervals (CIs) for categorical variables were
+calculated according to the Wilson score method, without continuity correction. 95\% CIs for 
+approximately normally distributed continuous variables were calculated using 
+the \textit{t}-distribution. For the body weight, the geometric mean was presented 
+togehther with 95\% CIs. The geometric mean was calculated as the anti-logarithm of the 
+mean of the log-transformed values. \\
+The Fisher's exact test or Pearson's $\chi^2$ test was used to compare categorical
+variables, the Wilcoxon test or Kruskal-Wallis test was used to compare differences in continuous
+variables between two or more groups. \\
+Shift tables from Baseline to week 24 were presented for HGB and WBC based on changes in the 
+normal ranges and tested with the McNemar’s test/Bowker’s symmetry test. \\
+Log body weight was analyzed in a multiple linear regression model with sex, age and 
+height as independent variables. An ANOVA table was constructed with Type I, II and III
+sum of squares.
+
+Overall survival (time from baseline to death or censoring) was estimated
+by the univariate Kaplan-Meier method and the median time to event was presented 
+together with 95\% CIs, overall and stratified by age group <65 years vs $\ge$ 65 years
+Survival curves were compared by the log-rank test. \\
+
+All p-values were descriptive and no adjustments for multiplicity were made. \\
+
+All analyses were based on the Full Analysis Set (FAS), consisting of all 
+subjects that received at least on dose of WonderDrug\texttrademark. Analysis was based 
+on available data at each timepoint (i.e. missing data were not imputed), with exception
+of the analysis of WBC over time: the last observation carried 
+forward (LOCF) method was used to input missing data and was presented - as sensitivity
+analysis - in addition to the analysis of the non-imputed data. \\
+Subgroup analyses were performed by age group (<65 years, $\ge$ 65 years). \\
+
+R version 3.4.2 (The R Foundation for Statistical Computing, Vienna, Austria) was
+used for statistical analysis. \\
+
+All data were \textit{fictitious} and the statistical methods that were applied served mainly
+as examples to show the usage of \emph{R code} within different \emph{R packages}.
+Data were generated with \href{https://www.sas.com}{SAS} v. 9.4 
+(SAS Institue Inc., Cary, NC, USA) using e.g. following functions: 
+\textit{rand("BINOMIAL", p, n)}, \textit{rand("NORMAL", mu, sigma)}, 
+\textit{exp(rand("NORMAL", mu, sigma))} and \textit{-log(ranuni(x))}. \emph{CDISC ADaM}
+standards were partly applied. 
+\href{https://github.com/clindocu/sasxpt-r}{clindocu/sasxpt-r} was used to 
+generate the data definition table and to import SAS .xpt files into R with associated
+user-defined formats (i.e. R \emph{factor(s),
+levels and label(s)}). \\
+This report was generated with \href{http://www.tug.org/texlive}{Tex Live 2017},
+\href{https://github.com/rstudio/rstudio}{RStudio},
+\href{https://www.r-project.org}{R} and \href{https://github.com/yihui/knitr}{knitr}. \\
+
+The data definition table (DDT) of all analysis datasets can be found here: 
+\attachfile[appearance=true, icon=Tag, description=Data Definition Table Analysis Datasets, 
+color=0.254902 0.411765 0.882353, mimetype=application/pdf,subject=DDT]{DDT.pdf}
+\tiny (double click to open) \\
+\normalsize
+
+Following \emph{R packages} were used:
+
+\begin{itemize}
+\item library(knitr)
+\item library(foreign)
+\item library(tidyverse)
+\item library(Hmisc)
+\item library(xtable)
+\item library(gridExtra)
+\item library(survminer)
+\item library(ggthemes)
+\item library(reporttools)
+\item library(texreg)
+\item library(car)
+\end{itemize}
+
+All code for generating this report can be found in appendix \ref{AllCode}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Text with \Sexpr{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+\newpage
+\section{Data Sets Analysed}
+Data were collected from \Sexpr{length(which(ADSL[["FASFL"]] == "Yes"))} subjects
+from \Sexpr{sum(table(table(ADSL$SITEID)))} study sites, all meeting the criteria for
+the FAS. \Sexpr{length(which(ADSL[["AGEGR1"]] == "<65"))} subjects were younger 
+than 65 years, \Sexpr{length(which(ADSL[["AGEGR1"]] == ">=65"))} subjects were older 
+than or equal 65 years. \\
+
+The disposition of subjects is shown in figure \ref{SubjDis} and is tabulated in
+table \ref{Dispos}.  Baseline characteristics (Age, Sex, Race, Weight, Height, BMI, 
+ECOG, HGB) are summarized in table \ref{ADemo2}.
+
+\subsection{Study Sites, by Age Category}
+
+<<results='asis'>>=
+# Hmisc:::summary.formula options;
+# overall= TRUE      - column with overall statistics;
+# test = FALSE       - no test statistics;
+# na.include = FALSE - if TRUE, exclude missing values from being counted as category;
+# continuous = 8     - threshold for when a numeric variable is considered to be continuous;
+s6 <- summary(AGEGR1 ~ SITEID, data = ADSL, method = 'reverse', 
+              overall = TRUE, test = FALSE, na.include = FALSE, continuous = 8)
+
+# Hmisc:::latex() options:;
+# npct = "both"       - numerator and denominator;
+# landscape = FALSE   - portrait;
+# long = TRUE         - print the results for the first category on its own line;
+# prmsd = TRUE        - print mean and SD after the three quantiles;
+# here = TRUE         - table will appear here;
+# prtest = 'P'        - P value when test = TRUE (can be c('P','stat','df','name'));
+# dotchart = FALSE    - no dotcharts in output;
+# longtable = FALSE:  - does not allow multiple pages;
+# caption = ""        - text string to use as a caption;
+# caption.loc = "top" - top or bottom;
+# middle.bold = TRUE  - bold face for the middle quantile;
+# file = ""           - LaTeX code will just printed to standard output;
+# digits = 2          - digits for printing (continuous variables);
+# exclude1 = FALSE    - e.g. prints Female/Male, when TRUE: Female only;
+# label = ""          - unique label, can be refferenced with \ref{myLabel};
+latex(s6, npct = "both", landscape = FALSE, long = TRUE, prmsd = TRUE, here = TRUE, 
+  prtest = "P", dotchart = FALSE, longtable = FALSE, 
+  caption = "Study Sites by Age Category - Hmisc:::summary.formula", 
+  caption.loc = "top", 
+  middle.bold = TRUE, file = "", digits = 2, exclude1 = FALSE, label = "Site01")
+@
+
+<<results='asis'>>=
+s6 <- summary(AGEGR1 ~ SITEID, data = ADSL, method = 'reverse', 
+              overall = TRUE, test = FALSE, na.include = FALSE, continuous = 8)
+
+latex(s6, npct = "both", landscape = FALSE, long = TRUE, prmsd = TRUE, here = TRUE, 
+  prtest = "P", dotchart = TRUE, longtable = FALSE,
+  caption = "Study Sites by Age Category - Hmisc.summary with dotchart", 
+  caption.loc = "top", 
+  middle.bold = TRUE, file = "", digits = 2, exclude1 = FALSE, label = "Site02")
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Include a PDF File
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\newpage
+\subsection{Disposition of Subjects}
+\begin{figure}[htp!]
+  \centering
+  \includegraphics[width=15cm]{Disposition.pdf}
+  \caption{Disposition of Subjects}
+  \label{SubjDis} 
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\newpage
+\subsection{Disposition of Subjects, by Age Category}
+<<results='asis', echo=TRUE>>=
+s6 <- summary(AGEGR1 ~ EOSSTT + DCSREAS, data = ADSL, method = 'reverse', 
+              overall = TRUE, test = FALSE, na.include = FALSE, continuous = 8)
+
+latex(s6, npct = "both", landscape = FALSE, long = TRUE, prmsd = TRUE, here = TRUE, 
+  prtest = "P", dotchart = FALSE,
+  caption = "Disposition of Subjects - Hmisc.summary with na.include = F", 
+  caption.loc = "top", 
+  middle.bold = TRUE, file = "", digits = 2, exclude1 = FALSE, label = "Dispos")
+@
+
+\subsubsection{Listing Reason for Non-Completion}
+
+<<results='asis', echo=TRUE>>=
+df1 <- ADSL %>%
+  select(USUBJID, SEX, AGE, DCSREAS, DSTERM) %>%
+  filter(DCSREAS != "") %>%
+  arrange(DCSREAS)
+
+my_table <- xtable(df1, caption = "Listing Reason for Non-Completion - xtable", 
+                   align = "lrrrlp{6cm}", caption.placement = "top")
+
+digits(my_table)[4] <- 0 # Age (column 4 with 0 digits);
+print(my_table, caption.placement = "top", size = "small", include.rownames = TRUE, 
+  table.placement = "htb", tabular.environment = "longtable", floating = FALSE)
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\newpage
+\section{Demographic and Other Baseline Characteristics}
+\subsection{Demographic and Other Baseline Characteristics - Hmisc}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\clearpage
+%\newpage
+
+<<results='asis'>>=
+# Add unit to Age in ADSL;
+units(ADSL$AGE) <- "years"
+
+s6 <- summary(AGEGR1 ~ AGE + SEX + RACE + WEIGHTBL + HEIGHT + BMI + ECOGBL + HGBBL, 
+            data = ADSL, method = 'reverse', overall = TRUE, test = FALSE,
+            na.include = FALSE, na.rm = TRUE, continuous = 8)
+
+latex(s6, npct = "both", landscape = TRUE, long = TRUE, prmsd = TRUE, here = T, 
+  prtest = "P", dotchart = FALSE,
+  caption = "Demographic and Other Baseline Characteristics - Hmisc.summary", 
+  caption.loc = "top", 
+  middle.bold = TRUE, file = "", digits = 2, exclude1 = FALSE, label = "ADemo1")
+@
+
+<<results='asis'>>=
+# Create new variables;
+ADSL$WBL <- ADSL$WEIGHTBL
+ADSL$HBL <- ADSL$HEIGHT
+ADSL$BML <- ADSL$BMI
+ADSL$HML <- ADSL$HGBBL
+
+# Add Labels;
+label(ADSL$WBL) <- "Weight at Baseline"
+label(ADSL$HBL) <- "Height"
+label(ADSL$BML) <- "Body Mass Index"
+label(ADSL$HML) <- "Hemoglobin at Baseline"
+
+### Add uniits;
+units(ADSL$WBL) <- "kg"
+units(ADSL$HBL) <- "cm"
+units(ADSL$BML) <- "kg/m2"
+units(ADSL$HML) <- "g/dL"
+
+s6 <- summary(AGEGR1 ~ AGE + SEX + RACE + WBL + HBL + BML + ECOGBL + HML, data = ADSL, 
+              method = 'reverse', overall = TRUE, test = TRUE, 
+              na.include = FALSE, na.rm = TRUE, continuous = 8)
+
+latex(s6, npct = "both", landscape = TRUE, long = TRUE, prmsd = TRUE, here = T, 
+  prtest = "P", dotchart = FALSE,
+  caption = "Demographic and Other Baseline Characteristics - Hmisc.summary with units and P-value",
+  caption.loc = "top", middle.bold = TRUE, file = "", digits = 2, exclude1 = FALSE, label = "ADemo2")
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\newpage
+\subsection{Demographic and Other Baseline Characteristics - reporttools:::tableContinuous}
+
+<<01_BaseChar, results='asis', echo=TRUE>>=
+# Generate dataframe with variables;
+vars <- with(ADSL, data.frame(
+  "Age years" = AGE,
+  "Weight kg" = WEIGHTBL,
+  "Height cm" = HEIGHT,
+  "BMI kg.m2" = BMI,
+  "Hemoglobin g.dL" = HGBBL))
+
+cap <- "Baseline Characteristics - reporttools:::tableContinuous - Wilcoxon test"
+lab <- "tab:BaseChar"
+bye <- ADSL$AGEGR1
+@
+
+<<ref.label="tabContBy", results='asis', echo=TRUE>>=
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\newpage
+\subsection{Demographic and Other Baseline Characteristics - reporttools:::tableNominal}
+
+<<01_BaseCategor, results='asis', echo=TRUE>>=
+vars <- with(ADSL, data.frame(
+  "Sex" = SEX,
+  "Race" = RACE,
+  "ECOG" = ECOGBL))
+
+cap <- "Baseline Char. - tableNominal - NAs excluded - Fisher's exact test"
+lab <- "tab:01_BaseCategor"
+bye <- ADSL$AGEGR1
+@
+
+<<ref.label="tabNomBy", results='asis', echo=TRUE>>=
+@
+
+<<01_BaseCatMiss, results='asis'>>=
+cap <- "Baseline Characteristics - tableNominal - NAs as category"
+lab <- "tab:01_BaseCatMiss"
+bye <- ADSL$AGEGR1
+@
+
+<<ref.label="tabNomBy2", results='asis', echo=TRUE>>=
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% DEMOGRAPHICS - END
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

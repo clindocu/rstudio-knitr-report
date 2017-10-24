@@ -1,0 +1,326 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%          SPONSOR: ABC
+%%%             DRUG: WonderDrug(TM)
+%%%      STUDY TITLE: Example Non-Interventional Study ABC-NIS-01 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%         STUDY NO: Alea01
+%%%        R PROGRAM: ALEA01.Rnw
+%%%          VERSION: 1.0
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%      DESCRIPTION: Tables, Listing, Figures
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% DEVELOPMENT DATE: 19Oct2017
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%     DEVELOPED BY: alea iacta
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%          RELEASE: 24Oct2017
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%             PATH: C:/Temp/ALEA01/
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass{article}                   % LaTeX document class;
+\usepackage[english]{babel}               % english as default; 
+\usepackage[scaled=.92]{helvet}           % Helvetica, scaled 92%;
+\renewcommand{\familydefault}{\sfdefault} % default sans serif font;
+\usepackage{pdflscape}                    % enables PDF landscape;
+\usepackage{longtable}                    % enables "longtable" evironment;
+\usepackage{booktabs}                     % enables \toprule \bottomrule;
+\usepackage{geometry}                     % Flexible and complete interface to document dimensions;
+\geometry{nomarginpar,a4paper,verbose,tmargin=2.5cm,bmargin=1.5cm,lmargin=1.5cm,
+          rmargin=1.5cm,headheight =1.5cm,headsep=0.3cm}
+\usepackage{lmodern}                      % high quality fonts;
+\usepackage{lastpage}                     % allows page # of ##;
+\usepackage{fancyhdr}                     % customize headers and footers;
+\usepackage{float}                        % interface for floating objects;
+\usepackage[utf8]{inputenc}               % standard input utf-8;
+\usepackage[T1]{fontenc}                  % T1 font encoding;
+\usepackage{calc}                         % allows \setcounter{};
+\usepackage{epic}                         % Enhance LaTeX picture mode;
+\usepackage{listings}                                 % allows code attachments with \lstinputlisting{};
+\usepackage{fancyvrb}                                 % allows verbatim attachments with \VerbatimInput{};
+\usepackage[colorlinks=true,linkcolor=blue]{hyperref} % hyperrefs in blue;
+\usepackage[section]{placeins}                        % control float placement;
+\usepackage{attachfile}                               % attach/embed files with \attachfile{};
+
+% Global settings for \lstinputlisting (with line breaks);
+\lstset{basicstyle=\sffamily,columns=fullflexible,keepspaces=true,breaklines=true}
+
+% no indentation whole document;
+\setlength{\parindent}{0pt} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%% BEGIN DOCUMENT;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\pagestyle{fancy}
+\fancyfoot[R]{Page \thepage\ of \pageref{LastPage}}  
+
+<<POPULATION, echo=FALSE, results="hide">>=
+# Enter Population (Analysis Set) here (for header and title page);
+VAR_myset <- "Full Analysis Set (FAS)"
+
+# Example: VAR_myset will not printed because results="hide";
+VAR_myset
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%% CREATE TITLE PAGE;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+<<TITEL, child='00_TITLE_PAGE.Rnw'>>=
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%% CREATE TABLE OF CONTENTS;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\setcounter{page}{2}
+
+\tableofcontents
+
+\listoftables
+
+\listoffigures
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%% ABBREVIATIONS;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+<<ABBREVIATIONS, child='00_ABBREVIATIONS.Rnw'>>=
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%% GLOBAL OPTIONS;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+<<set-options, echo=FALSE>>=
+# Options
+options(replace.assign = TRUE, width = 80)
+
+# disabling scientific notation in R;
+options(scipen = 999)
+
+# Set digit option;
+options(digits = 2)
+
+pdf.options(family = "Helvetica-Narrow")
+
+# Define knitr chunk options;
+opts_chunk$set(fig.width  = 7, 
+               fig.height = 7, 
+               out.width  = '10cm', 
+               fig.pos    = 'H',
+               fig.align  = 'center',
+               fig.path   = './figure/Plot-',
+               fig.keep   = 'all',
+               cache      = FALSE,
+               echo       = FALSE,                  # FALSE: no output of R code;
+               message    = FALSE,                  # FALSE: no output of R messages;
+               warning    = FALSE,                  # FALSE: no output of warnings;
+               dev        = 'pdf')
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%% READ SAS XPT FILES WITH USER-DEFINED FORMATS;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+<<external-code>>=
+source("impsas_xpt.R")
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%% Read R Chunks and user defined R Functions;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+<<read-external, warning=TRUE>>=
+### Read chunks;
+read_chunk("00_chunks.R")
+
+### Read R functions;
+source("00_r_functions.R")
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%% ANALYSIS PROGRAMS - BEGIN;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%% Include R program 01_DEMOG.Rnw;
+
+<<DEMOG, child='01_DEMOG.Rnw'>>=
+@
+
+%%%%%%%%%%%%%%%%%%%%% Include R program 01_DEMO_FIG.Rnw;
+
+<<DEMOG_FIG, child='01_DEMOG_FIG.Rnw'>>=
+@
+
+%%%%%%%%%%%%%%%%%%%%% Include R program 01_LINEAR_MODEL.Rnw;
+
+<<LINEAR_MODEL, child='01_LINEAR_MODEL.Rnw'>>=
+@
+
+%%%%%%%%%%%%%%%%%%%%% Include R program 02_KAPLAN.Rnw;
+
+<<KAPLAN, child='02_KAPLAN.Rnw'>>=
+@
+
+%%%%%%%%%%%%%%%%%%%%% Include R program 03_LAB_HGB.Rnw;
+
+<<LABEXHGB, child='03_LAB_HGB.Rnw'>>=
+@
+
+%%%%%%%%%%%%%%%%%%%%% Include R program 03_LAB_WBC.Rnw;
+
+<<LABEXWBC, child='03_LAB_WBC.Rnw'>>=
+@
+
+%%%%%%%%%%%%%%%%%%%%% Include R program 04_RESPONSE.Rnw;
+
+<<RESPONSE, child='04_RESPONSE.Rnw'>>=
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%% ANALYSIS PROGRAMS - END;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%% APPENDIX INCLUDE ALL KNITR CODE;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\newpage
+
+\begin{appendix}
+
+\section{All Code for Generating this Report} \label{AllCode} 
+\subsection{Master Rnw File ALEA01.Rnw}
+\fvset{fontsize=\small} % fancyvrb option;
+\VerbatimInput{ALEA01.Rnw}
+
+\clearpage
+\newpage
+\subsection{File 00\_TITLE\_PAGE.Rnw}
+\fvset{fontsize=\small}
+\VerbatimInput{00_TITLE_PAGE.Rnw}
+
+\clearpage
+\newpage
+\subsection{File 00\_ABBREVIATIONS.Rnw}
+\fvset{fontsize=\small}
+\VerbatimInput{00_ABBREVIATIONS.Rnw}
+
+\clearpage
+\newpage
+\subsection{File impsas\_xpt.R}
+Following \emph{.R script file} was generated automatically 
+with \href{https://github.com/clindocu/sasxpt-r}{clindocu/sasxpt-r:}
+
+\lstinputlisting{impsas_xpt.R} % input file with autom. line breaks;
+
+\clearpage
+\newpage
+\subsection{File 00\_chunks.R}
+\fvset{fontsize=\small}
+\VerbatimInput{00_chunks.R}
+
+\clearpage
+\newpage
+\subsection{File 00\_r\_functions.R}
+\fvset{fontsize=\small}
+\VerbatimInput{00_r_functions.R}
+
+\clearpage
+\newpage
+\subsection{File 01\_DEMOG.Rnw}
+\fvset{fontsize=\small}
+\VerbatimInput{01_DEMOG.Rnw}
+
+\clearpage
+\newpage
+\subsection{File 01\_DEMOG\_FIG.Rnw}
+\fvset{fontsize=\small}
+\VerbatimInput{01_DEMOG_FIG.Rnw}
+
+\clearpage
+\newpage
+\subsection{File 01\_LINEAR\_MODEL.Rnw}
+\fvset{fontsize=\small}
+\VerbatimInput{01_LINEAR_MODEL.Rnw}
+
+\clearpage
+\newpage
+\subsection{File 02\_KAPLAN.Rnw}
+\fvset{fontsize=\small}
+\VerbatimInput{02_KAPLAN.Rnw}
+
+\clearpage
+\newpage
+\subsection{File 03\_LAB\_HGB.Rnw}
+\fvset{fontsize=\small}
+\VerbatimInput{03_LAB_HGB.Rnw}
+
+\clearpage
+\newpage
+\subsection{File 03\_LAB\_WBC.Rnw}
+\fvset{fontsize=\small}
+\VerbatimInput{03_LAB_WBC.Rnw}
+
+\clearpage
+\newpage
+\subsection{File 04\_RESPONSE.Rnw}
+\fvset{fontsize=\small}
+\VerbatimInput{04_RESPONSE.Rnw}
+
+\clearpage
+\newpage
+\subsection{File 99\_HISTORY.Rnw}
+\fvset{fontsize=\small}
+\VerbatimInput{99_HISTORY.Rnw}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%% APPENDIX VERSION HISTORY;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+<<HISTORY, child='99_HISTORY.Rnw'>>=
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%% APPENDIX TECHNICAL DETAILS;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\newpage
+
+\section{Technical Details}
+
+\tiny{
+  % \subsection{System Details}
+  % <<echo=TRUE>>=
+  %   Sys.info()
+  % @
+  \subsection{R Version}
+  <<echo=TRUE>>=
+    R.Version()
+  @
+  \subsection{Active R packages}
+  <<echo=TRUE>>=
+    sessionInfo()
+  @
+  \subsection{PDF \LaTeX{}}
+  <<echo=TRUE>>=
+    Sys.which("pdflatex")
+  @
+  \subsection{System Time}
+  <<echo=TRUE>>=
+    Sys.time()
+  @
+}
+
+\end{appendix}
+
+\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%% END DOCUMENT;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+

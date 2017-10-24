@@ -1,0 +1,43 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% TUMOR RESPONSE - BEGIN
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+\newpage
+\section{Tumor Response}
+
+<<results='asis'>>=
+ADRS2$AVALC2 <- ADRS2$AVALC
+label(ADRS2$AVALC2) <- "Objective Tumor Response Rate"
+
+s6 <- summary(AGEGR1 ~ AVALC2, data = ADRS2, method = 'reverse', 
+              overall = TRUE, test = TRUE, na.include = FALSE, continuous = 8)
+
+latex(s6, npct = "both", landscape = FALSE, long = TRUE, prmsd = TRUE, here = TRUE, 
+  prtest = "P", dotchart = FALSE,
+  caption = "Objective Tumor Response Rate - (SD, PD, Missing counted as Non Responder)", caption.loc = "top", 
+  middle.bold = TRUE, file = "", digits = 2, exclude1 = FALSE, label = "RESP1")
+@
+
+<<results='asis', echo=TRUE>>=
+ADRS1$AVALC2 <- ADRS1$AVALC
+label(ADRS1$AVALC2) <- "Best Overall Response"
+
+s6 <- summary(AGEGR1 ~ AVALC2, data = ADRS1, method = 'reverse', 
+              overall = TRUE, test = FALSE, na.include = FALSE, continuous = 8)
+
+latex(s6, npct = "both", landscape = FALSE, long = TRUE, prmsd = TRUE, here = TRUE,
+  prtest = "P", dotchart = FALSE,
+  caption = "Best Overall Response", caption.loc = "top", 
+  middle.bold = TRUE, file = "", digits = 2, exclude1 = FALSE, label = "RESP2")
+@
+
+<<results='asis', echo=TRUE>>=
+BiFreqCI(ADRS2$AVALC2, cap = "Objective Tumor Response Rate (95\\% Wilson Score CIs w/o cont. corr.)")
+BiFreqCI(ADRS1$AVALC2, cap = "Best Overall Response (95\\% Wilson Score Interval w/o cont. corr.)")
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% TUMOR RESPONSE - END
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

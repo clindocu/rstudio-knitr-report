@@ -1,0 +1,125 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% LABORATORY PARAMETER WBC - BEGIN
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+\newpage
+\subsection{WBC over Time (no data imputation, LOCF)}
+
+<<03_WBCBOX>>=
+df_aval <- ADLB %>% select(PARAM, PARAMCD, AVISIT, AVISITN, AVAL, DTYPE) %>%
+  mutate(Xaxis = AVISIT, Yaxis = AVAL) %>%
+  filter(PARAMCD == "WBC" & DTYPE == "")
+
+df_LOCF <- ADLB %>% select(PARAM, PARAMCD, AVISIT, AVISITN, AVAL, DTYPE) %>%
+  mutate(Xaxis = AVISIT, Yaxis = AVAL) %>%
+  filter(PARAMCD == "WBC" & (DTYPE == "" | DTYPE == "LOCF"))
+@
+
+<<03_WBCCI, results='asis'>>=
+myCaption <- "Summary of WBC over Time, mean +/- 95\\% CIs (no data imputation)"
+LbyCI(df_aval$AVAL, df_aval$AVISIT, size = "small")
+@
+
+<<03_WBCCI2, results='asis'>>=
+myCaption <- "Summary of WBC over Time, mean +/- 95\\% CIs (LOCF)"
+LbyCI(df_LOCF$AVAL, df_LOCF$AVISIT, size = "small")
+@
+
+<<03_WBCQUART, results='asis'>>=
+myCaption <- "Summary of WBC over Time, Q1, Q3 (no data imputation)"
+LbyQUART(df_aval$AVAL, df_aval$AVISIT, size = "small")
+@
+
+<<03_WBCQUART2, results='asis'>>=
+myCaption <- "Summary of WBC over Time, Q1, Q3 (LOCF)"
+LbyQUART(df_LOCF$AVAL, df_LOCF$AVISIT, size = "small")
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\newpage
+\subsection{WBC over Time, boxplots}
+
+<<03_WBCBOX1>>=
+df_BOX <- df_aval
+xLab <- "Visit"
+yLab <- "10^9/L"
+cap <- "WBC over Time - Boxplot (no data imputation)"
+@
+
+<<WBC_Box_Aval, ref.label="BoxPlot", fig.width=6, fig.height=6, out.width='10cm', fig.cap=cap>>=
+@
+
+<<03_WBCBOX2>>=
+df_BOX <- df_LOCF
+xLab <- "Visit"
+yLab <- "10^9/L"
+cap <- "WBC over Time - Boxplot (LOCF)"
+@
+
+<<WBC_Box_LOCF, ref.label="BoxPlot", fig.width=6, fig.height=6, out.width='10cm', fig.cap=cap>>=
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\newpage
+\subsection{WBC, Shift Table Baseline vs. Week 24 (no data imputation)}
+
+<<results='asis'>>=
+#### Subset WBC at W24
+df_W24 <- ADLB %>% select(AGEGR1, AVISIT, PARAMCD, BNRIND, ANRIND, SHIFT1, DTYPE) %>%
+  filter(PARAMCD == "WBC" & AVISIT == "Week 24"  & DTYPE == "")
+label(df_W24$SHIFT1) <- "Shift BL to Week 24"
+
+
+s6 <- summary(AGEGR1 ~ SHIFT1, data = df_W24, method = 'reverse', 
+              overall = TRUE, test = FALSE, na.include = FALSE, continuous = 8)
+
+latex(s6, npct = "both", landscape = FALSE, long = TRUE, prmsd = TRUE, here = TRUE, 
+  prtest = "P", dotchart = FALSE,
+  caption = "WBC, Shift Table Baseline to Week 24 (no data imputation)", caption.loc = "top", 
+  middle.bold = TRUE, file = "", digits = 2, exclude1 = FALSE, label = "WBC_SH24")
+@
+
+<<results='asis'>>=
+#print(CrossTable(tab1))
+tab1 <- table(df_W24$BNRIND, df_W24$ANRIND)
+tab2 <- as.data.frame(tab1)
+#tab_sum <- addmargins(tab1)
+
+cap <- "WBC, Shift Table Baseline to Week 24 (no data imputation)"
+latex(tab1, file = "", here = TRUE, title = "Baseline/W24", caption = cap, label = runif(1))
+mcnemar.test(tab1)
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+<<fig.width=7, fig.height=5>>=
+p1 <- ggplot(tab2, aes(Var1, Var2)) +
+  geom_point(aes(size = Freq), colour = "#9999FF") + 
+  scale_x_discrete() +
+  geom_text(aes(label = Freq)) +
+  labs(x ="Baseline", y = "Week 24") +
+  scale_size_continuous(range = c(5, 20)) +
+  theme_bw()
+@
+
+<<shiftWBC, fig.width=7, fig.height=5>>=
+# Example: ggsave() function for saving plot;
+ggsave("WBC_Shift24.pdf", p1)
+@
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\textwidth]{WBC_Shift24.pdf}
+  \caption{WBC, Shift Table Baseline to Week 24 (no data imputation)}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% LABORATORY PARAMETER WBC - END
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+

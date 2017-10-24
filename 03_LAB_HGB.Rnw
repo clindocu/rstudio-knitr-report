@@ -1,0 +1,121 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% LABORATORY PARAMETER HGB - BEGIN
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+\newpage
+\section{Laboratory Data}
+\subsection{Hemoglobin over Time}
+
+<<03_HGBBOX, echo=TRUE>>=
+df_BOX <- ADLB %>% select(PARAM, PARAMCD, AVISIT, AVISITN, AVAL) %>%
+  mutate(Xaxis = AVISIT, Yaxis = AVAL) %>%
+  filter(PARAMCD == "HGB")
+
+xLab <- "Visit"
+yLab <- "g/dL"
+cap <- "Hemoglobin over Time - Boxplot"
+@
+
+<<03_HGBCI, results='asis', echo=TRUE>>=
+myCaption <- "Summary of Hemoglobin over Time, mean +/- 95\\% CIs"
+LbyCI(df_BOX$AVAL, df_BOX$AVISIT, size = "small")
+@
+
+<<03_HGBQUART, results='asis', echo=TRUE>>=
+myCaption <- "Summary of Hemoglobin over Time, Q1, Q3"
+LbyQUART(df_BOX$AVAL, df_BOX$AVISIT, size = "small")
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+\newpage
+\subsection{Hemoglobin over Time, boxplot}
+<<HGB_Box, ref.label="BoxPlot", fig.width=6, fig.height=6, out.width='10cm', echo=TRUE, fig.cap=cap>>=
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\newpage
+\subsection{Hemoglobin over Time, jitter}
+<<HGB_jitter, fig.width=7, fig.height=7, out.width='10cm', echo=TRUE, fig.cap=cap>>=
+cap <- "Hemoglobin over Time, mean +/- SD - jitter"
+df1 <- ADLB %>% select(PARAM, PARAMCD, AVISIT, AVISITN, AVAL) %>%
+  mutate(Xaxis = AVISIT, Yaxis = AVAL) %>%
+  filter(PARAMCD == "HGB")
+
+ggplot(df1, aes(x = Xaxis, y = Yaxis)) +
+  stat_summary(fun.y = mean, geom = "point", col = "red", size = 3) +
+  geom_point(alpha = 0.2, position = position_jitter(width = 0.12, height = 0.01)) +
+  stat_summary(fun.data = mean_sdl, fun.args = list(mult = 1), 
+               geom = "errorbar", width = 0.2, col = "red") +
+  labs(x = "Visit", y = "g/dL") +
+  theme_pubr()
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\newpage
+\subsection{Hemoglobin, Shift Table Baseline vs. Week 24}
+
+<<results='asis', echo=TRUE>>=
+# Subset HGB at W24
+df_W24 <- ADLB %>% select(AGEGR1, AVISIT, PARAMCD, BNRIND2, ANRIND2, SHIFT2) %>%
+  filter(PARAMCD == "HGB" & AVISIT == "Week 24")
+label(df_W24$SHIFT2) <- "Shift BL to Week 24"
+
+s6 <- summary(AGEGR1 ~ SHIFT2, data = df_W24, method = 'reverse', 
+              overall = TRUE, test = FALSE, na.include = FALSE, continuous = 8)
+
+latex(s6, npct = "both", landscape = FALSE, long = TRUE, prmsd = TRUE, here = TRUE,
+  prtest = "P", dotchart = FALSE,
+  caption = "Hemoglobin, Shift Table Baseline to Week 24", caption.loc = "top", 
+  middle.bold = TRUE, file = "", digits = 2, exclude1 = FALSE, label = "HGB_SH24")
+@
+
+<<results='asis', echo=TRUE>>=
+tab1 <- table(df_W24$BNRIND2, df_W24$ANRIND2)
+tab2 <- as.data.frame(tab1)
+tab_sum <- addmargins(tab1)
+
+cap <- "Hemoglobin, Shift Table Baseline to Week 24 (overall)"
+latex(tab_sum, file = "", here = TRUE, title = "Baseline/W24", 
+  caption = cap, label = runif(1))
+mcnemar.test(tab1)
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\newpage
+\subsection{Hemoglobin, Shift Table Baseline vs. Week 24}
+
+<<echo=TRUE, fig.width=7, fig.height=5>>=
+p1 <- ggplot(tab2, aes(Var1, Var2)) +
+  geom_point(aes(size = Freq), colour = "#9999FF") + 
+  scale_x_discrete() +
+  geom_text(aes(label = Freq)) +
+  labs(x ="Baseline", y = "Week 24") +
+  # scale_size_continuous(range = c(5, 20), guide = FALSE) + # hide legend;
+  scale_size_continuous(range = c(5, 20)) +
+  theme_bw()
+@
+
+<<shifHGB, fig.width=7, fig.height=5>>=
+# Example: ggsave() function for saving plot;
+ggsave("HGB_Shift24.pdf", p1)
+@
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\textwidth]{HGB_Shift24.pdf}
+  \caption{Hemoglobin, Shift Table Baseline to Week 24}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% LABORATORY PARAMETER HGB - END
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

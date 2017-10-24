@@ -1,0 +1,45 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% ABBREVIATIONS - BEGIN
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+\newpage
+\section{List of Abbreviations and Definition of Terms}
+
+\begin{longtable}[ht]{p{2.5cm} p {11.8cm}} 
+  \toprule \\
+  \textbf{Abbreviation or specialist term}  & \textbf{Explanation} \\
+	\bottomrule \\
+ADaM & Analysis Data Model \\	
+BL & Baseline \\	
+CDISC & \href{https://www.cdisc.org}
+        {Clinical Data Interchange Standards Consortium} \\
+CI & Confidence Interval \\	
+FAS & Full Analysis Set \\
+HGB & Hemoglobin \\
+KM & Kaplan-Meier \\
+knitr & \href{https://github.com/yihui/knitr}
+      {knitr: A General-Purpose Package for Dynamic Report Generation in R, Yihui Xie, 2017} \\
+LOCF & Last Observation Carried Forward \\
+N & Number of observations \\
+NA & Not Available \\
+OS & Overall Survival \\
+Q1 & Lower quartile \\
+Q3 & Upper quartile \\
+R & \href{https://www.r-project.org/}{R Foundation for Statistical Computing, Vienna, Austria} \\
+RStudio &\href{https://github.com/rstudio/rstudio}
+              {RStudio: Integrated Development Environment for R. RStudio, Inc., Boston, MA} \\
+SAP & Statistical Analysis Plan \\
+SAS & \href{https://www.sas.com}{SAS Institute Inc., Cary, NC, USA.} \\
+SD & Standard Deviation \\
+SS & Sums of Squares \\
+Tex Live & \href{http://www.tug.org/texlive}{Tex Live, Tex Users Group, Portland, OR, USA} \\
+USUBJID & Unique Subject Identifier \\
+WBC & White Blood Cell \\
+\hline
+ 
+\end{longtable}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% ABBREVIATIONS - END
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,52 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% KAPLAN MEIER CURVES - BEGIN
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+\newpage
+\section{Overall Survival}
+\subsection{OS Kaplan-Meier Curves +/- 95\% CIs}
+
+<<01_OS>>=
+df_KM <- ADTTE %>% 
+  mutate(Time = AVAL, Status = CNSR) 
+
+fit <- survfit(Surv(Time, Status == 0) ~ 1, data = df_KM)
+fit2 <- "Kaplan-Meier Estimates"
+cap <- "Overall Survival (overall)"
+@
+
+<<OS, ref.label="KmPlotCens", fig.width=10, fig.height=8, out.width='16cm', fig.cap=cap>>==
+@
+
+<<results='asis'>>=
+KMquart(fit, "Overall Survival KM Quartiles +/- 95\\% CIs")
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\newpage
+\subsection{OS Kaplan-Meier Curves, Strata Age 65 yrs.}
+
+<<01_KMAG1, echo=TRUE>>=
+# Generate KM dataset;
+df_KM <- ADTTE %>% 
+  mutate(AGE = AGEGR1, Time = AVAL, Status = CNSR) %>% 
+  filter(!is.na(AGE))
+
+fit <- survfit(Surv(Time, Status == 0) ~ AGE, data = df_KM)
+fit2 <- survdiff(Surv(Time, Status == 0) ~ AGE, rho = 0, data = df_KM)
+cap <- "Overall Survival (Strata Age 65 yrs. at Baseline)"
+@
+
+<<KMAG1, ref.label="KmPlotCens", fig.width=10, fig.height=8, out.width='16cm', echo=TRUE, fig.cap=cap>>=
+@
+
+<<results='asis', echo=TRUE>>=
+KMquart(fit, "Overall Survival KM Quartiles +/- 95\\% CIs (Strata Age 65 yrs.)")
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% KAPLAN MEIER CURVES - END
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

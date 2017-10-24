@@ -1,0 +1,107 @@
+********************************************************************;
+********** USER DEFINED SAS FORMATS - BEGIN;
+********************************************************************;
+
+proc format;
+    /********** Character Formats */ 
+    value $AVISIT (notsorted) 
+                    "BASELINE"="Baseline"
+                    "WEEK 8"="Week 8"
+                    "WEEK 16"="Week 16"
+                    "WEEK 24"="Week 24";
+
+    /********** The option 'notsorted' keeps this sort order */ 
+    value $ARS (notsorted) 
+                "COMPLETE RESPONSE"="Complete Response"
+                "PARTIAL RESPONSE"="Partial Response"
+                "STABLE DISEASE"="Stable Disease"
+                "PROGRESSIVE DISEASE"="Progressive Disease"
+                "MISSING"="Missing";
+
+    value $AORS (notsorted)
+                "RESPONDER"="Responder"
+                "NON RESPONDER"="Non Responder";
+
+    value $DCREAS (notsorted)
+                  "ADVERSE EVENT"="Adverse Event"
+                  "LOST TO FOLLOW-UP"="Lost to Follow-Up"
+                  "WITHDRAWAL BY SUBJECT"="Withdrawal by Subject";
+
+    value $NCOMPLT (notsorted) 
+                    'COMPLETED'='Completed'
+                    'ADVERSE EVENT'='Adverse Event'
+                    'DEATH'='Death'
+                    'LACK OF EFFICACY'='Lack of Efficacy'
+                    'LOST TO FOLLOW-UP'='Lost to follow-up'
+                    'PHYSICIAN DECISION'='Physician decision'
+                    'PREGNANCY'='Pregnancy'
+                    'WITHDRAWAL BY SUBJECT'='Withdrawal by Subject'
+                    'PROTOCOL DEVIATION'='Protocol Deviation'
+                    'OTHER'='Other';
+
+    value $NORMAL (notsorted)
+                  'LOW'='Low'
+                  'NORMAL'='Normal'
+                  'HIGH'='High';
+
+    value $ABNOR (notsorted)
+                 'ABNORMAL'='Abnormal'
+                 'NORMAL'='Normal';
+
+    value $NY (notsorted)
+              "Y"="Yes"
+              "N"="No";
+
+    value $RACE (notsorted)
+                'WHITE'='White'
+                'BLACK OR AFRICAN AMERICAN'='Black or African American'
+                'AMERICAN INDIAN OR ALASKA NATIVE'='American Indian or Alaska Native'
+                'ASIAN'='Asian';
+
+    value $SEX "F"="Female"
+               "M"="Male";
+
+    value $SBJTST (notsorted)
+                  'COMPLETED'='Completed'
+                  'DISCONTINUED'='Discontinued'
+                  'ONGOING'='Ongoing';
+
+    value $SHIFT (notsorted)
+                'LOW to LOW'='Low to Low'
+                'LOW to NORMAL'='Low to Normal'
+                'LOW to HIGH'='Low to High'
+                'NORMAL to LOW'='Normal to Low'
+                'NORMAL to NORMAL'='Normal to Normal'
+                'NORMAL to HIGH'='Normal to High'
+                'HIGH to LOW'='High to Low'
+                'HIGH to NORMAL'='High to Normal'
+                'HIGH to HIGH'='High to High';
+
+    value $ABSHIFT (notsorted)
+                'ABNORMAL to ABNORMAL'='Abnormal to Abnormal'
+                'ABNORMAL to NORMAL'='Abnormal to Normal'
+                'NORMAL to NORMAL'='Normal to Normal'
+                'NORMAL to ABNORMAL'='Normal to Abnormal';
+
+    value $YES "Y"="Yes";
+
+    /********** Numeric Formats */ 
+    value ECOG 0="0"
+               1="1"
+               2="2"
+               3="3"
+               4="4";
+
+    value SEXN 0="Female"
+               1="Male";
+
+    value RACEN
+          1='White'
+          2='Black or African American'
+          3='American Indian or Alaska Native'
+          4='Asian';
+run;quit;
+
+********************************************************************;
+********** USER DEFINED SAS FORMATS - END;
+********************************************************************;

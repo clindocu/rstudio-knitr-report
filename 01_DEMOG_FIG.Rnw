@@ -1,0 +1,217 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% DEMOGRAPHICS FIGURES - BEGIN
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\newpage
+\subsection{Histogram Age}
+
+<<demo3, echo=TRUE>>=
+df_hist <- ADSL %>% select(AGE) %>%
+  mutate(Param = AGE) %>%
+  filter(!is.na(Param))
+
+myLabel <- "Age (yrs.)"
+myWidth <- 3
+cap <- "Histogram Age (yrs.)"
+
+# Create histogram with:;
+# ref.label="HistPlot"
+@
+
+<<Age, ref.label="HistPlot", results='asis', fig.width=10, fig.height=5, out.width='14cm', fig.cap=cap>>=
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\newpage
+\subsection{Histogram Weight at Baseline}
+
+<<demo4>>=
+# NOTE: Subjects with missing SEX were excluded (consistency with next table);
+df_hist <- ADSL %>% select(WEIGHTBL, SEX) %>%
+  mutate(Param = WEIGHTBL) %>%
+  filter(!is.na(Param) & !is.na(SEX))
+
+myLabel <- "Weight at Baseline (kg)"
+myWidth <- 3
+cap <- "Histogram Weight (kg) at Baseline"
+@
+
+<<Wght, ref.label="HistPlot", results='asis', fig.width=10, fig.height=5, out.width='14cm', echo=T, fig.cap=cap>>=
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\newpage
+\subsection{Weight at Baseline - Boxplot, Density Plot, QQ-Plot}
+<<demo5>>=
+mydata <- ADSL %>% select(WEIGHTBL, SEX) %>%
+  mutate(Param = WEIGHTBL) %>%
+  filter(!is.na(Param)) %>%
+  filter(!is.na(SEX))  
+  
+myLab <- "Weigth at Baseline"
+cap <- "Weight (kg) at Baseline, by Sex"
+@
+ 
+<<Wght2, ref.label="HistSex", fig.width=10, fig.height=10, out.width='16cm', fig.cap=cap>>=
+@
+
+<<demo6, results='asis', echo=TRUE>>=
+myCaption <- "Summary Statistics: Weight (kg) at Baseline"
+
+# Enter not transformed Variable Name here;
+LbyQUART(mydata$WEIGHTBL, mydata$SEX)
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\newpage
+\subsection{Log10 Weight at Baseline - Boxplot, Density Plot, QQ-Plot}
+<<echo=TRUE>>=
+mydata <- ADSL %>% select(WEIGHTBL, L10WTBL, SEX) %>%
+  mutate(Param = L10WTBL) %>%
+  filter(!is.na(Param)) %>%
+  filter(!is.na(SEX))
+
+myLab <- "Log10 Weigth"
+cap <- "Log10 Weight (kg) at Baseline, by Sex"
+@
+ 
+<<LgWeight, ref.label="HistSex", fig.width=10, fig.height=10, out.width='16cm', echo=TRUE, fig.cap=cap>>=
+@
+
+<<results='asis', echo=TRUE>>=
+myCaption <- "Geometric Mean +/- 95 CIs: Weight (kg) at Baseline"
+
+# Enter not transformed Variable Name here;
+LbyGEO(mydata$WEIGHTBL, mydata$SEX)
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\newpage
+\subsection{Sex at Baseline}
+
+<<01_SEX, echo=TRUE>>=
+df_cat <- select(ADSL, SEX) %>% 
+       mutate(Level = SEX) %>%
+       filter(Level != "")
+
+cap <- "SEX at Baseline - polar chart, bar chart, pie chart"
+@
+
+<<SEX, ref.label="CatPlot", fig.width=10, fig.height=4.5, out.width='16cm', echo=TRUE, fig.cap=cap>>=
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\newpage
+\subsection{ECOG at Baseline}
+
+<<01_ECOG, echo=TRUE>>=
+df_cat <- select(ADSL, ECOGBL) %>% 
+       mutate(Level = ECOGBL) %>%
+       filter(Level != "")
+
+cap <- "ECOG at Baseline - polar chart, bar chart, pie chart"
+@
+
+<<ECOG_CAT, ref.label="CatPlot", fig.width=10, fig.height=4.5, out.width='16cm', echo=TRUE, fig.cap=cap>>=
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\newpage
+\subsection{ECOG at Baseline, by Age Group (1)}
+<<ECOG_STACKED, echo=TRUE, fig.cap=cap, out.width='10cm'>>=
+cap <- "ECOG Status at Baseline, by Age Group (up to 100\\%) - stacked bar chart"
+df1 <- ADSL %>% select(AGEGR1, ECOGBL) %>%
+  filter(!is.na(ECOGBL))
+
+df1$ECOG <- factor(df1$ECOG, c("5", "4", "3", "2", "1", "0"), exclude = "")
+levels(df1$ECOG) <- c("5", "4", "3", "2", "1", "0")
+
+ggplot(data = df1, aes(x = AGEGR1, y = 1, fill = ECOG)) +
+  geom_bar(stat = "identity", position = "fill") +
+  labs(x = "Age Group (yrs.)", y = "100 %") +
+  theme_pubr()
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\newpage
+\subsection{ECOG at Baseline, by Age Group (2)}
+
+<<echo=TRUE>>=
+# Using latex Method \includegraphics{};
+pdf("ECOG_STAT_2.pdf")
+
+ggplot(data = df1, aes(x = AGEGR1, fill = ECOG)) +
+  geom_bar(position = position_dodge(0.92)) +
+  labs(x = "Age Group (yrs.)") +
+  theme_pubr()
+@
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=10cm, height=10cm]{ECOG_STAT_2.pdf}
+  \caption{ECOG Status at Baseline, by Age Group - side by side bar chart}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\newpage
+\subsection{Scatterplot Matrix, graphics:::pairs}
+
+<<echo=TRUE, fig.width=10, fig.height=10, out.width='16cm'>>=
+df1 <- ADSL %>% select(AGE, WEIGHTBL, HEIGHT, BMI, HGBBL)
+# Very simple: Scatter plot matrix of all variables in dataframe;
+pairs(df1)
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\newpage
+\subsection{Scatterplot Matrix, by Sex, car:::scatterplotMatrix}
+
+<<echo=TRUE, fig.width=10, fig.height=10, out.width='16cm'>>=
+df1 <- ADSL %>% select(AGE, WEIGHTBL, HEIGHT, BMI, HGBBL, SEX)
+scatterplotMatrix(~ AGE + WEIGHTBL + HEIGHT + BMI + HGBBL | SEX, 
+  by.group = TRUE, reg.line = TRUE, col = c("#8E0152", "#4292C6"), data = df1)
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\newpage
+\subsection{Scatterplot, Weight as a function of Height, by Sex}
+<<echo=TRUE, fig.width=5, fig.height=5, out.width='10cm'>>=
+# Using latex Method \includegraphics{};
+pdf("HEIGHT_WEIGHT.pdf")
+
+df2 <- ADSL %>% select(SEX, HEIGHT, WEIGHTBL) %>%
+  filter(!is.na(HEIGHT) & !is.na(WEIGHTBL) & !is.na(SEX))
+
+ggplot(df2, aes(x = HEIGHT, y = WEIGHTBL, col = SEX)) +
+  geom_point(alpha = 0.8) +
+  labs(x = "Height cm", y = "Weight kg") +
+  stat_smooth(aes(group = SEX), method = "lm", se = T, level = 0.95) +
+  scale_color_manual(values = c("#8E0152", "#4292C6")) + 
+  theme_pubr()
+@
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=10cm, height=10cm]{HEIGHT_WEIGHT.pdf}
+  \caption{Scatter Plot Height, Weight, by Sex with confid. interval}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% DEMOGRAPHICS FIGURES - END
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,78 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% LINEAR MODEL - BEGIN
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+\newpage
+\subsection{Example: Linear Model Log10 Weight - Sex + Age + Height}
+
+<<01_ModelWeight, results='asis', echo=TRUE>>=
+model <- lm(L10WTBL ~ SEX + AGE + HEIGHT, data = ADSL)
+cap <- "Linear model Log10 Weight: Sex + Age + Height - latex:::xtable(lm)"
+@
+
+<<ref.label="reglm", results='asis', echo=TRUE>>=
+@
+
+<<01_ModelWeight2, results='asis', echo=TRUE>>=
+cap <- "Linear model Log10 Weight: Sex + Age + Height - texreg:::texreg(lm)"
+@
+
+<<ref.label="texreglm", results='asis', echo=TRUE>>=
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\newpage
+\subsection{Example: Linear Model - Diagnostic Plots}
+
+<<echo=TRUE, fig.width=10, fig.height=10, out.width='16cm'>>=
+model <- lm(as.numeric(L10WTBL) ~ SEX + AGE + HEIGHT, data = ADSL)
+par(mfrow = c(2, 2))
+plot(model)
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% LINEAR MODEL - END
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% ANOVA MODDEL - BEGIN
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+\newpage
+\subsection{Example: ANOVA model with Type I, II, III SS}
+
+<<results='asis', echo=TRUE>>=
+cap <- "ANOVA Type I SS - stats:::anova"
+aov_1 <- anova(model)
+
+latex(xtable(aov_1), digits = 2, file = "", title = "", here = TRUE, caption = cap, 
+      label = runif(1))
+@
+
+<<results='asis', echo=TRUE>>=
+cap <- "ANOVA Type II SS - car:::Anova"
+aov_2 <- Anova(model, type = "II")
+
+latex(xtable(aov_2), digits = 2, file = "", title = "", here = TRUE, caption = cap, 
+      label = runif(1))
+@
+
+<<results='asis', echo=TRUE>>=
+cap <- "ANOVA Type III SS - car:::Anova"
+# options(contrasts=c("contr.helmert", "contr.poly")) # like SAS and SPSS (?);
+options(contrasts = c("contr.sum", "contr.poly"))
+aov_3 <- Anova(model, type = "III")
+options(contrasts = c("contr.treatment", "contr.poly")) # default;
+
+latex(xtable(aov_3), digits = 2, file = "", title = "", here = TRUE, caption = cap, 
+      label = runif(1))
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% ANOVA MODDEL - BEGIN
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
