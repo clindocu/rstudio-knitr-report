@@ -58,7 +58,7 @@ Usage
 
 3.  Open **ALEA01.Rnw** and click on **Compile PDF** in RStudio
 
-![*Click and finished*](Click_PDF.png)
+![*Click and finished*](Click_PDF.PNG)
 
 Compile PDF -&gt; ALEA01.tex -&gt; **ALEA01.pdf** will be automatically *generated* and *opened*
 
@@ -71,7 +71,7 @@ Requirements
 
 ### RStudio Gobal Options: knitr and pdfLaTeX - Default Settings
 
-![Sweave Default Settings](Knitr_Option.png)
+![Sweave Default Settings](Knitr_Option.PNG)
 
 ### knitr
 
