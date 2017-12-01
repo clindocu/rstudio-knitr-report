@@ -3,7 +3,7 @@
 rstudio-knitr-report
 ====================
 
-An example of a **PDF report** generated with **RStudio**, **R** and **knitr** where data from a *fictious non-interventional study* was analyzed.
+An example of a **PDF report** generated with **RStudio**, **R** and **knitr** where data from a *fictitious non-interventional study* was analyzed.
 
 See final statistical PDF report: [ALEA01.pdf](ALEA01.pdf)
 
@@ -14,7 +14,7 @@ The goal of this set of **.Rnw** programs is to generate a PDF report in **RStud
 
 All code for generating this report is included in the appendix of the report and in the majority of cases `R syntax highlighting` has been used within the report.
 
-All analysis data sets (SAS xpt files) are *fictious* and were generated with SAS v. 9.4 (SAS Institue Inc., Cary, NC, USA) using e.g. following functions: *rand("BINOMIAL", p, n)*, *rand("NORMAL", mu, sigma)*, *exp(rand("NORMAL", mu, sigma))* and *-log(ranuni(x))*.
+All analysis data sets (SAS xpt files) are *fictitious* and were generated with SAS v. 9.4 (SAS Institue Inc., Cary, NC, USA) using e.g. following functions: *rand("BINOMIAL", p, n)*, *rand("NORMAL", mu, sigma)*, *exp(rand("NORMAL", mu, sigma))* and *-log(ranuni(x))*.
 
 There is one *master* program (**ALEA01.Rnw**) and following *child* programs:
 
@@ -148,5 +148,3 @@ Conclusion
 ----------
 
 This set of **.Rnw** programs generates a **PDF report** including ***tables***, ***listings*** and ***figures*** and can be used as a template, e.g. for analysis of *non-interventional studies*. The PDF report has a a title page, a table of content with hyper-references, a header with a logo, page numbering in the footer, an embeded PDF document, figure and table references, landscape PDF pages, a list of abbreviations, a history page, `R syntax highlighting` within the document and all code that generates the report is included in the appendix - all in compliance with *reproducible research* "best practices".
-
-All code comes with NO WARRANTY
