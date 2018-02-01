@@ -148,3 +148,12 @@ Conclusion
 ----------
 
 This set of **.Rnw** programs generates a **PDF report** including ***tables***, ***listings*** and ***figures*** and can be used as a template, e.g. for analysis of *non-interventional studies*. The PDF report has a a title page, a table of content with hyper-references, a header with a logo, page numbering in the footer, an embeded PDF document, figure and table references, landscape PDF pages, a list of abbreviations, a history page, `R syntax highlighting` within the document and all code that generates the report is included in the appendix - all in compliance with *reproducible research* "best practices".
+
+Using R in a Regulatory Environment
+-----------------------------------
+
+NOTE: For Regulatory Compliance and Validation Issues see, e.g.,
+
+-   <http://blog.revolutionanalytics.com/2017/06/r-fda.html>
+-   <http://www.r-project.org/doc/R-FDA.pdf>
+-   <https://www.ispe.org/publications/guidance-documents/gamp-5>
