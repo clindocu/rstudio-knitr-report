@@ -1,11 +1,10 @@
 #### Set R working directory
-setwd("C:/Temp/ALEA01/")
+setwd("C:/Temp3/Report/")
 #### Use install.packages("knitr"), install.packages("foreign"), etc. if necessary
 library(knitr)
 library(foreign)
 #### tidyverse: ggplot2, tibble, tidyr, readr, purrr, dplyr
 library(tidyverse)
-library(Hmisc)
 library(xtable)
 library(gridExtra)
 library(survminer)
@@ -13,6 +12,7 @@ library(ggthemes)
 library(reporttools)
 library(texreg)
 library(car)
+library(Hmisc)
 #### Read all .xpt files from working directory. Derive date/times. Set factor, levels, labels.
 ADLB <- read.xport("ADLB.xpt")
 ADRS1 <- read.xport("ADRS1.xpt")
