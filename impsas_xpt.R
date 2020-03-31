@@ -1,5 +1,5 @@
 #### Set R working directory
-setwd("C:/Temp3/Report/")
+setwd("C:/Temp/ALEA01/")
 #### Use install.packages("knitr"), install.packages("foreign"), etc. if necessary
 library(knitr)
 library(foreign)
