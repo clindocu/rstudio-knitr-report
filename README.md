@@ -115,7 +115,6 @@ Following R packages must be installed:
 library(knitr)
 library(foreign)
 library(tidyverse)
-library(Hmisc)
 library(xtable)
 library(gridExtra)
 library(survminer)
@@ -123,6 +122,7 @@ library(ggthemes)
 library(reporttools)
 library(texreg)
 library(car)
+library(Hmisc)
 ```
 
 Test Environment
@@ -142,7 +142,8 @@ Please note, that different versions of R packages may cause problems, e.g. beca
 3.  Execute each *chunk* separately to test the R code for correct functionality
 4.  Assure that *chunk* labels are **unique** (`<<ChunkLabel, options>>=`)
 5.  Assure that *label(s)* within R function `latex(label = "mylabel")` - for referencing of tables - are **unique** (avoid error: There were multiply-defined labels)
-6.  Search the internet
+6.  If you change the file name ALEA01.Rnw change also line 198 in newfile.Rnw (VerbatimInput)
+7.  Search the internet
 
 Conclusion
 ----------
